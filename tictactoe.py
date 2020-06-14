@@ -30,17 +30,17 @@ def print_board():
 
 def o_wins():
     for i in range(0, 3):
-        if board[i] == o_win or board_t[i] == o_win:
+        if o_win in (board[i], board_t[i]):
             return True
-        if cor1 == o_win or cor2 == o_win:
+        if o_win in (cor1, cor2):
             return True
 
 
 def x_wins():
     for i in range(0, 3):
-        if board[i] == x_win or board_t[i] == x_win:
+        if x_win in (board[i], board_t[i]):
             return True
-        if cor1 == x_win or cor2 == x_win:
+        if x_win in (cor2, cor1):
             return True
 
 

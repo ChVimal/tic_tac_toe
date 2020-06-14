@@ -49,6 +49,7 @@ def impossible():
         return True
     elif abs(count_x - count_o) > 1:
         return True
+    return false
 
 
 def draw():

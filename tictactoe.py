@@ -99,7 +99,7 @@ def next_move():
             print("This cell is occupied! Choose another one!")
             continue
 
-        if count % 2 is 0:
+        if count % 2 == 0:
             count_x += 1
             if next_move_cord2 == 3:
                 board[0][next_move_cord1 - 1] = 'X'

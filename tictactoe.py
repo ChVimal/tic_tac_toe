@@ -45,11 +45,8 @@ def x_wins():
 
 
 def impossible():
-    if x_wins() and o_wins():
+    if x_wins() and o_wins() or abs(count_x - count_o) > 1:
         return True
-    elif abs(count_x - count_o) > 1:
-        return True
-    return false
 
 
 def draw():
@@ -96,9 +93,9 @@ def next_move():
             print("Coordinates should be from 1 to 3!")
             continue
 
-        if next_move_cord2 == 3 and board[0][next_move_cord1 - 1] is not '_' or \
-                next_move_cord2 == 2 and board[1][next_move_cord1 - 1] is not '_' or \
-                next_move_cord2 == 1 and board[2][next_move_cord1 - 1] is not '_':
+        if next_move_cord2 == 3 and board[0][next_move_cord1 - 1] != '_' or \
+                next_move_cord2 == 2 and board[1][next_move_cord1 - 1] != '_' or \
+                next_move_cord2 == 1 and board[2][next_move_cord1 - 1] != '_':
             print("This cell is occupied! Choose another one!")
             continue
 

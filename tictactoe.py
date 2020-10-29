@@ -12,8 +12,7 @@ def player(board):
             count[i] += 1
     if count["X"] <= count["O"]:
         return "X"
-    else:
-        return "O"
+    return "O"
 
 
 class TicTacToe:
@@ -54,7 +53,7 @@ class TicTacToe:
         for i in self.winning_combination:
             if {board[i[0]], board[i[1]], board[i[2]]} == set("X"):
                 return "X"
-            elif {board[i[0]], board[i[1]], board[i[2]]} == set("O"):
+            if {board[i[0]], board[i[1]], board[i[2]]} == set("O"):
                 return "O"
         return None
 
@@ -83,7 +82,7 @@ class TicTacToe:
                 index = temp.index("_")
                 self.board[i[index]] = current_player
                 return
-            elif p_loss == sorted(temp):
+            if p_loss == sorted(temp):
                 index = temp.index("_")
                 self.board[i[index]] = current_player
                 return
@@ -167,7 +166,7 @@ class TicTacToe:
             winner = self.winner(self.board)
             if winner:
                 return winner
-            elif flag:
+            if flag:
                 self.playerX()
                 flag = False
             else:

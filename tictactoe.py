@@ -1,127 +1,175 @@
-board = [['_', '_', '_'],
-         ['_', '_', '_'],
-         ['_', '_', '_']]
-
-x_win = ['X', 'X', 'X']
-o_win = ['O', 'O', 'O']
-
-board_t = [[board[j][i] for j in range(len(board))] for i in range(len(board[0]))]
-cor1 = [board[0][0], board[1][1], board[2][2]]
-cor2 = [board[2][0], board[1][1], board[0][2]]
-count_x = 0
-count_o = 0
-count = 0
+import random
 
 
-def update_board():
-    global board_t, cor1, cor2, count
-    count += 1
-    board_t = [[board[j][i] for j in range(len(board))] for i in range(len(board[0]))]
-    cor1 = [board[0][0], board[1][1], board[2][2]]
-    cor2 = [board[2][0], board[1][1], board[0][2]]
+def initial_state():
+    return ["_", "_", "_", "_", "_", "_", "_", "_", "_"]
 
 
-def print_board():
-    print("---------")
+def player(board):
+    count = {"X": 0, "O": 0}
     for i in board:
-        print("| {} {} {} |".format(i[0], i[1], i[2]))
-    print("---------")
-
-
-def o_wins():
-    for i in range(0, 3):
-        if o_win in (board[i], board_t[i]):
-            return True
-        if o_win in (cor1, cor2):
-            return True
-
-
-def x_wins():
-    for i in range(0, 3):
-        if x_win in (board[i], board_t[i]):
-            return True
-        if x_win in (cor2, cor1):
-            return True
-
-
-def impossible():
-    if x_wins() and o_wins() or abs(count_x - count_o) > 1:
-        return True
-
-
-def draw():
-    var = True
-    if x_wins() and o_wins():
-        return True
-
-    for i in board:
-        if "_" in i:
-            var = False
-
-    if var:
-        return True
-
-
-def current_situation():
-    if impossible():
-        print("Impossible!")
-    elif x_wins():
-        print("X wins!")
-    elif o_wins():
-        print("O wins!")
-    elif draw():
-        print("Draw!")
+        if i in count.keys():
+            count[i] += 1
+    if count["X"] <= count["O"]:
+        return "X"
     else:
-        return True
+        return "O"
 
 
-def next_move():
-    global count, count_x, count_o
+class TicTacToe:
+    def __init__(self, pX, pO):
+        players = {
+            "user": self.user,
+            "easy": self.easy,
+            "medium": self.medium,
+            "hard": self.hard,
+        }
+        self.playerX = players[pX]
+        self.playerO = players[pO]
+        self.board = initial_state()
+        self.winning_combination = (
+            (0, 1, 2),
+            (3, 4, 5),
+            (6, 7, 8),
+            (0, 3, 6),
+            (1, 4, 7),
+            (2, 5, 8),
+            (0, 4, 8),
+            (2, 4, 6),
+        )
 
-    while True:
-        raw_input = input()
-        next_move_cord1, next_move_cord2 = raw_input.split(' ')
-        if next_move_cord1.isdigit() and next_move_cord2.isdigit():
-            next_move_cord1 = int(next_move_cord1)
-            next_move_cord2 = int(next_move_cord2)
-        else:
-            print("You should enter numbers!")
-            continue
+    def print_board(self):
+        print("---------")
+        for i in range(0, 9, 3):
+            print(
+                "| {} {} {} |".format(
+                    self.board[i], self.board[1 + i], self.board[2 + i]
+                )
+            )
+        print("---------")
 
-        if next_move_cord1 > 3 or next_move_cord2 > 3 or \
-                next_move_cord1 < 1 or next_move_cord2 < 1:
-            print("Coordinates should be from 1 to 3!")
-            continue
+    def winner(self, board):
+        if "_" not in board:
+            return "Tie"
+        for i in self.winning_combination:
+            if {board[i[0]], board[i[1]], board[i[2]]} == set("X"):
+                return "X"
+            elif {board[i[0]], board[i[1]], board[i[2]]} == set("O"):
+                return "O"
+        return None
 
-        if next_move_cord2 == 3 and board[0][next_move_cord1 - 1] != '_' or \
-                next_move_cord2 == 2 and board[1][next_move_cord1 - 1] != '_' or \
-                next_move_cord2 == 1 and board[2][next_move_cord1 - 1] != '_':
-            print("This cell is occupied! Choose another one!")
-            continue
-
-        if count % 2 == 0:
-            count_x += 1
-            if next_move_cord2 == 3:
-                board[0][next_move_cord1 - 1] = 'X'
-            elif next_move_cord2 == 2:
-                board[1][next_move_cord1 - 1] = 'X'
+    def random_move(self):
+        random.seed()
+        while True:
+            index = random.choice(range(9))
+            if self.board[index] != "_":
+                continue
             else:
-                board[2][next_move_cord1 - 1] = 'X'
-        else:
-            count_o += 1
-            if next_move_cord2 == 3:
-                board[0][next_move_cord1 - 1] = 'O'
-            elif next_move_cord2 == 2:
-                board[1][next_move_cord1 - 1] = 'O'
+                self.board[index] = player(self.board)
+                break
+
+    def easy(self):
+        print('Making move level "easy"')
+        self.random_move()
+
+    def medium(self):
+        print('Making move level "medium"')
+        current_player = player(self.board)
+        p_loss = sorted(("X", "X", "_"))
+        p_win = sorted(("O", "O", "_"))
+        for i in self.winning_combination:
+            temp = (self.board[i[0]], self.board[i[1]], self.board[i[2]])
+            if p_win == sorted(temp):
+                index = temp.index("_")
+                self.board[i[index]] = current_player
+                return
+            elif p_loss == sorted(temp):
+                index = temp.index("_")
+                self.board[i[index]] = current_player
+                return
+        self.random_move()
+
+    def hard(self):
+        print('Making move level "hard"')
+        current_player = player(self.board)
+
+        if self.board == initial_state():
+            index = random.choice([0, 1, 2, 3, 5, 6, 7, 8])
+            self.board[index] = current_player
+            return
+
+        best_score = -10 if current_player == "X" else 10
+        index = 0
+        for i in range(9):
+            if self.board[i] == "_":
+                self.board[i] = current_player
+                score = self.minimax(self.board, best_score)
+                self.board[i] = "_"
+
+                if current_player == "X":
+                    score = max(best_score, score)
+
+                if current_player == "O":
+                    score = min(best_score, score)
+
+                if score != best_score:
+                    best_score = score
+                    index = i
+
+        self.board[index] = current_player
+
+    def minimax(self, board, score_of_parent):
+        winner = self.winner(board)
+        if winner:
+            return 1 if winner == "X" else -1 if winner == "O" else 0
+
+        current_player = player(board)
+        best_score = -10 if current_player == "X" else 10
+
+        for i in range(9):
+            if self.board[i] == "_":
+                self.board[i] = current_player
+                score = self.minimax(self.board, best_score)
+                self.board[i] = "_"
+
+                if current_player == "X":
+                    if score > score_of_parent:
+                        return score
+                    best_score = max(best_score, score)
+
+                if current_player == "O":
+                    if score < score_of_parent:
+                        return score
+                    best_score = min(best_score, score)
+        return best_score
+
+    def user(self):
+        while True:
+            index = input("Enter the position: ")
+            if len(index) > 1:
+                print("You can enter only one position. Try again.")
+            elif not index.isdigit():
+                print("You should enter numbers!")
+                continue
+            elif int(index) not in range(0, 9):
+                print("Coordinates should be from 0 to 8!")
+                continue
+            elif self.board[int(index)] != "_":
+                print("This cell is occupied! Choose another one!")
+                continue
+            self.board[int(index)] = player(self.board)
+            break
+
+    def play(self):
+        flag = True
+        while True:
+            self.print_board()
+            winner = self.winner(self.board)
+            if winner:
+                return winner
+            elif flag:
+                self.playerX()
+                flag = False
             else:
-                board[2][next_move_cord1 - 1] = 'O'
-
-        update_board()
-        break
-
-
-print_board()
-
-while current_situation():
-    next_move()
-    print_board()
+                self.playerO()
+                flag = True

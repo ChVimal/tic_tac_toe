@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import tictactoe
+import sys
 
 
 def menu():
@@ -9,8 +10,8 @@ def menu():
         if what_user_want not in ("start", "exit", "1", "2"):
             print("Bad parameters!")
             continue
-        elif what_user_want in ("exit", "2"):
-            exit()
+        if what_user_want in ("exit", "2"):
+            sys.exit()
         else:
             while True:
                 players = input("Choose player: ")

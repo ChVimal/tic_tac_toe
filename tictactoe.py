@@ -63,9 +63,8 @@ class TicTacToe:
             index = random.choice(range(9))
             if self.board[index] != "_":
                 continue
-            else:
-                self.board[index] = player(self.board)
-                break
+            self.board[index] = player(self.board)
+            break
 
     def easy(self):
         print('Making move level "easy"')
